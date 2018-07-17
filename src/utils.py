@@ -59,17 +59,20 @@ def clean(s):
 def unicode_csv_reader(utf8_data, dialect=csv.excel, **kwargs):
     csv_reader = csv.reader(utf8_data, dialect=dialect, **kwargs)
     for row in csv_reader:
-        yield [unicode(cell, 'utf-8') for cell in row]
+        # yield [unicode(cell, 'utf-8') for cell in row]
+        yield [str(cell) for cell in row] # NOTE: Changed for python3.
 
 def load_body(filename):
     id2body = {}
     id2body_sentences = {}
-    with open(filename) as fh:
+    # with open(filename) as fh:
+    with open(filename, encoding='utf-8', errors='ignore') as fh: # NOTE: Added encoding-'utf-8'
         reader = csv.DictReader(fh)
         data = list(reader)
         for row in data:
             id = row['Body ID']
-            body = unicode(row['articleBody'], errors='ignore').decode('utf-8').strip()
+            # body = unicode(row['articleBody'], errors='ignore').decode('utf-8').strip()
+            body = str(row['articleBody']).strip() # NOTE: Changed for python3.
             body_sentences = tokenizer.tokenize(body)
 
             clean_body = clean(body)
@@ -103,11 +106,13 @@ def load_body(filename):
 
 def load_title(filename):
     data = []
-    with open(filename) as fh:
+    # with open(filename) as fh:
+    with open(filename, errors='ignore') as fh: # NOTE: Changed for python3.
         reader = csv.DictReader(fh)
         raw_data = list(reader)
         for row in raw_data:
-            title = unicode(row['Headline'], errors='ignore').decode('utf-8').strip()
+            # title = unicode(row['Headline'], errors='ignore').decode('utf-8').strip()
+            title = str(row['Headline']).strip() # NOTE: Changed for python3.
             clean_title = clean(title)
             clean_title = get_tokenized_lemmas(clean_title)
 
@@ -126,13 +131,13 @@ def load_title(filename):
         # ignore the stance if there is any
         data.append((clean_title, id))
     return data
-    
+
 def load_stance(filename):
-    reader = unicode_csv_reader(open(filename))
+    # reader = unicode_csv_reader(open(filename))
+    reader = unicode_csv_reader(open(filename, errors='ignore')) # NOTE: Changed for python3.
     data = []
     for title, id, stance in reader:
         clean_title = clean(title)
         clean_title = get_tokenized_lemmas(clean_title)
         data.append((clean_title, id, stance.strip()))
     return data
-    

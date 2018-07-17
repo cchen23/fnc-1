@@ -12,19 +12,23 @@ from utils import normalize_word
 
 word2vec = {}
 
+# NOTE: Changed all xrange to range.
+
 # Load Google's pre-trained Word2Vec model.
 def initialize():
     global word2vec
     if len(word2vec) == 0:
-        print 'loading word2vec...'
-        word_vectors = KeyedVectors.load_word2vec_format('./resources/GoogleNews-vectors-negative300.bin', binary=True)
+        print('loading word2vec...')
+        # word_vectors = KeyedVectors.load_word2vec_format('./resources/GoogleNews-vectors-negative300.bin', binary=True)
+        word_vectors = KeyedVectors.load_word2vec_format('../resources/GoogleNews-vectors-negative300.bin', binary=True)
         for word in word_vectors.vocab:
             word2vec[normalize_word(word)] = word_vectors[word]
-        print 'word2vec loaded'
+        print('word2vec loaded')
 
 def prepare_idf(id2body):
     idf = defaultdict(float)
-    for (body_id, body) in id2body.iteritems():
+    # for (body_id, body) in id2body.iteritems():
+    for (body_id, body) in id2body.items(): # NOTE: Changed for python3.
         for word in set(body):
             idf[word] += 1
     for word in idf:
@@ -42,12 +46,12 @@ def train_and_predict_3_steps(train, test, id2body, id2body_sentences):
     trainY = [int(stance == 'unrelated') for (clean_title, body_id, stance) in train]
     relatedness_classifier = train_relatedness_classifier(trainX, trainY)
 
-    relatedTrainX = [trainX[i] for i in xrange(len(trainX)) if trainY[i] == 0]
-    relatedTrainY = [int(train[i][2] == 'discuss') for i in xrange(len(trainX)) if trainY[i] == 0]
+    relatedTrainX = [trainX[i] for i in range(len(trainX)) if trainY[i] == 0]
+    relatedTrainY = [int(train[i][2] == 'discuss') for i in range(len(trainX)) if trainY[i] == 0]
     discuss_classifier = train_relatedness_classifier(relatedTrainX, relatedTrainY)
 
-    agreeTrainX = [trainX[i] for i in xrange(len(trainX)) if train[i][2] == 'agree' or train[i][2] == 'disagree']
-    agreeTrainY = [int(train[i][2] == 'agree') for i in xrange(len(trainX)) if train[i][2] == 'agree' or train[i][2] == 'disagree']
+    agreeTrainX = [trainX[i] for i in range(len(trainX)) if train[i][2] == 'agree' or train[i][2] == 'disagree']
+    agreeTrainY = [int(train[i][2] == 'agree') for i in range(len(trainX)) if train[i][2] == 'agree' or train[i][2] == 'disagree']
     agree_classifier = train_relatedness_classifier(agreeTrainX, agreeTrainY)
 
     testX = [extract_features(clean_title, id2body[body_id], id2body_sentences[body_id],idf, word2vec) for (clean_title, body_id) in test]

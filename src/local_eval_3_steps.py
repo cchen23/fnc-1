@@ -4,9 +4,10 @@ import random
 from random import shuffle
 from main import train_and_predict_3_steps
 
+# NOTE: Changed all xrange to range
 def score_submission(truth, pred):
     score = 0
-    for i in xrange(len(truth)):
+    for i in range(len(truth)):
         if truth[i] == pred[i]:
             score += 0.25
             if truth[i] != 'unrelated':
@@ -34,15 +35,15 @@ random.seed(19911226)
 
 fold_scores = []
 cm = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
-for iteration in xrange(2):
+for iteration in range(2):
     shuffle(train_data)
     FOLDS = 5
-    folds = [[] for i in xrange(FOLDS)]
-    for i in xrange(len(train_data)):
+    folds = [[] for i in range(FOLDS)]
+    for i in range(len(train_data)):
         folds[i % FOLDS].append(train_data[i])
-    for fold in xrange(FOLDS):
+    for fold in range(FOLDS):
         fold_train, fold_test, fold_truth = [], [], []
-        for i in xrange(FOLDS):
+        for i in range(FOLDS):
             if i != fold:
                 fold_train.extend(folds[i])
         for (headline, body_id, stance) in folds[fold]:
@@ -53,7 +54,7 @@ for iteration in xrange(2):
 
         test_score = score_submission(fold_truth, fold_pred)
 
-        for i in xrange(len(fold_truth)):
+        for i in range(len(fold_truth)):
             cm[LABELS.index(fold_truth[i])][LABELS.index(fold_pred[i])] += 1
 
         null_score, max_score = score_defaults(fold_truth)

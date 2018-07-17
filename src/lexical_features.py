@@ -23,16 +23,16 @@ def sentences2vectors(sentences):
             body_vector /= np.linalg.norm(body_vector)
         body_vectors.append(body_vector)
     return body_vectors
-    
+
 def title2vectors(title):
     return sentences2vectors(tokenizer.tokenize(title))
-    
+
 def extract_features(title, body):
     title_vectors = sentences2vectors([title])
     title_vector = title_vectors[0]
-    
+
     body_vectors = sentences2vectors(body)
-    
+
     max_sim = -1
     diff_vector = title_vector
     for body_vector in body_vectors:
@@ -50,17 +50,18 @@ train_data = load_stance('data/train_stances.csv');
 
 out = open('train-feats.csv', 'w')
 out.write('label')
-for d in xrange(300):
+# for d in xrange(300):
+for d in range(300):
     out.write(',dim_' + str(d))
 out.write(',max_sim\n')
 for (title, id, stance) in train_data:
     body = id2body[id]
 
     feats = extract_features(title, body)
-    
+
     output = []
     for feat in feats:
         output.append(str(feat))
-    
+
     out.write(stance + ',' + ','.join(output) + '\n')
 out.close()

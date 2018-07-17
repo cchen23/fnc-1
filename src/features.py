@@ -13,12 +13,14 @@ def lexical_overlaps(title, body, idf):
     words_in_title = text2count(title)
 
     maximum, maximum_cnt = 0.0, 0.0
-    for (word, cnt_title) in words_in_title.iteritems():
+    # for (word, cnt_title) in words_in_title.iteritems():
+    for (word, cnt_title) in words_in_title.items(): # NOTE: Changed for python3.
         maximum += cnt_title * idf[word]
         maximum_cnt += cnt_title
 
     overlaps, overlap_cnt = 0, 0
-    for (word, cnt_title) in words_in_title.iteritems():
+    # for (word, cnt_title) in words_in_title.iteritems():
+    for (word, cnt_title) in words_in_title.items(): # NOTE: Changed for python3.
         if word in words_in_body:
             tf = min(cnt_title, words_in_body[word])
             overlap_cnt += tf
@@ -27,7 +29,8 @@ def lexical_overlaps(title, body, idf):
 
     words_in_body = text2count(body[:len(title) * 4])
     overlaps, overlap_cnt = 0, 0
-    for (word, cnt_title) in words_in_title.iteritems():
+    # for (word, cnt_title) in words_in_title.iteritems():
+    for (word, cnt_title) in words_in_title.items(): # NOTE: Changed for python3.
         if word in words_in_body:
             tf = min(cnt_title, words_in_body[word])
             overlap_cnt += tf
@@ -55,12 +58,14 @@ def compute_overlap(title, body_sentence, idf):
     words_in_title = text2count(title)
 
     maximum, maximum_cnt = 0.0, 0.0
-    for (word, cnt_title) in words_in_title.iteritems():
+    # for (word, cnt_title) in words_in_title.iteritems():
+    for (word, cnt_title) in words_in_title.items(): # NOTE: Changed for python3.
         maximum += cnt_title * idf[word]
         maximum_cnt += cnt_title
 
     overlaps, overlap_cnt = 0, 0
-    for (word, cnt_title) in words_in_title.iteritems():
+    # for (word, cnt_title) in words_in_title.iteritems():
+    for (word, cnt_title) in words_in_title.items(): # NOTE: Changed for python3.
         if word in words_in_body:
             tf = min(cnt_title, words_in_body[word])
             overlap_cnt += tf
@@ -72,7 +77,7 @@ def semantic_similarities(title, body_sentences, word2vec, idf):
     title_vector = title2vector(title, word2vec, idf)
     max_sim = -1
     best_vector = np.array([0.0] * 300)
-    
+
     supports = []
     for sub_body in body_sentences:
         sub_body_vector = title2vector(sub_body, word2vec, idf)
@@ -83,7 +88,8 @@ def semantic_similarities(title, body_sentences, word2vec, idf):
         max_overlap_cnt = max(max_overlap_cnt, cur_overlap_cnt)
 
         similarity = 0
-        for i in xrange(300):
+        # for i in xrange(300):
+        for i in range(300):
             similarity += title_vector[i] * sub_body_vector[i]
         if similarity > max_sim:
             max_sim = similarity
